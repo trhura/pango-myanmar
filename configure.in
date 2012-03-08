@@ -1,0 +1,193 @@
+dnl Process this file with autoconf to create configure.
+AC_PREREQ(2.54)
+AC_INIT(ChangeLog)
+
+dnl ==========================================================================
+dnl                               Versioning              
+dnl ==========================================================================
+
+PANGO_REQUIRED_VERSION=1.20.1
+
+dnl Initialize automake stuff
+m4_define([mymr_major_version], [0])
+m4_define([mymr_minor_version], [1])
+m4_define([mymr_micro_version], [0])
+m4_define([mymr_version],
+          [mymr_major_version.mymr_minor_version.mymr_micro_version])
+AM_INIT_AUTOMAKE(pango-myanmar, [mymr_version])
+
+MYMR_MAJOR_VERSION=mymr_major_version()
+MYMR_MINOR_VERSION=mymr_minor_version()
+MYMR_MICRO_VERSION=mymr_micro_version()
+MYMR_VERSION=mymr_version()
+
+AC_SUBST(MYMR_MAJOR_VERSION)
+AC_SUBST(MYMR_MINOR_VERSION)
+AC_SUBST(MYMR_MICRO_VERSION)
+AC_SUBST(MYMR_VERSION)
+
+AC_PROG_CC
+AM_DISABLE_STATIC
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
+
+AC_MSG_CHECKING([for some Win32 platform])
+case "$host" in
+  *-*-mingw*|*-*-cygwin*)
+    pango_platform_win32=yes
+    ;;
+  *)
+    pango_platform_win32=no
+    ;;
+esac
+AC_MSG_RESULT([$pango_platform_win32])
+AM_CONDITIONAL(PLATFORM_WIN32, test "$pango_platform_win32" = "yes")
+
+#
+# Checks for FreeType
+#
+FREETYPE_LIBS=
+FREETYPE_CFLAGS=
+have_freetype=false
+AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
+if test "x$FREETYPE_CONFIG" != "xno" ; then
+  FREETYPE_CFLAGS=`$FREETYPE_CONFIG --cflags`
+  FREETYPE_LIBS=`$FREETYPE_CONFIG --libs`
+
+  pango_save_ldflags=$LDFLAGS
+  LDFLAGS="$LDFLAGS $FREETYPE_LIBS"
+  AC_CHECK_LIB(freetype, FT_New_Face, have_freetype=true, :)
+  LDFLAGS=$pango_save_ldflags
+
+  if $have_freetype ; then
+    pango_save_cppflags="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS $FREETYPE_CFLAGS"
+
+    AC_MSG_CHECKING([For sufficiently new FreeType (at least 2.0.1)])
+    AC_TRY_COMPILE([
+#include FT_FREETYPE_H
+#include FT_ERRORS_H
+]
+                ,[(void)1;],:,have_freetype=false)
+    if $have_freetype ; then
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+    fi
+
+    CPPFLAGS="$pango_save_cppflags"
+  fi
+fi
+AC_SUBST(FREETYPE_LIBS)
+AC_SUBST(FREETYPE_CFLAGS)
+
+## see which freetype we have, 2.0.3 vs. 2.0.4
+pango_save_cppflags="$CPPFLAGS"  
+CPPFLAGS="$CPPFLAGS $FREETYPE_CFLAGS"
+AC_CHECK_HEADER(freetype/internal/tterrors.h, AC_DEFINE(HAVE_FREETYPE_2_0_3))
+CPPFLAGS="$pango_save_cppflags"
+
+## Check to see whether we have FT_Get_First_Char(), new in 2.0.9
+pango_save_libs=$LIBS
+LIBS="$LIBS $FREETYPE_LIBS"
+AC_CHECK_FUNCS(FT_Get_First_Char)
+LIBS=$pango_save_libs
+
+#
+# Check for fontconfig
+#
+have_fontconfig=false
+
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 1.0.1, have_fontconfig=true, :)
+
+if $have_fontconfig ; then
+  #
+  # Checks for FreeType
+  #
+  FREETYPE_LIBS=
+  FREETYPE_CFLAGS=
+  AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
+  if test "x$FREETYPE_CONFIG" != "xno" ; then
+    FREETYPE_CFLAGS=`$FREETYPE_CONFIG --cflags`
+    FREETYPE_LIBS=`$FREETYPE_CONFIG --libs`
+
+    pango_save_ldflags=$LDFLAGS
+    LDFLAGS="$LDFLAGS $FREETYPE_LIBS"
+    AC_CHECK_LIB(freetype, FT_Get_Next_Char, have_freetype=true, :)
+    LDFLAGS=$pango_save_ldflags
+  fi
+
+  FREETYPE_LIBS="$FONTCONFIG_LIBS $FREETYPE_LIBS"
+  FREETYPE_CFLAGS="$FONTCONFIG_CFLAGS $FREETYPE_CFLAGS"
+
+  AC_SUBST(FREETYPE_LIBS)
+  AC_SUBST(FREETYPE_CFLAGS)
+
+  #
+  # Checks for Xft/XRender
+  #
+  if $have_x && $have_freetype ; then
+    PKG_CHECK_MODULES(XFT, xft >= 2.0.0, have_xft=true, :)
+  fi
+
+  AC_SUBST(XFT_LIBS)
+  AC_SUBST(XFT_CFLAGS)
+else
+  AC_MSG_WARN([No fontconfig found, skipping tests for FreeType and Xft])
+fi
+
+AM_CONDITIONAL(HAVE_FREETYPE, $have_freetype)
+AM_CONDITIONAL(HAVE_XFT, $have_xft)
+
+#
+# Checks for Win32 GDI
+#
+have_win32=false
+WIN32_LIBS=""
+WIN32_CFLAGS=""
+# The following doesn't work with autoconf-2.13, so we check $host instead
+# AC_CHECK_LIB(gdi32, GetTextMetricsA@8, have_win32=true, : )
+case "$host" in
+  *-*-mingw*|*-*-cygwin*) have_win32=true ;;
+esac
+
+
+if test $have_win32 = true; then
+  WIN32_LIBS="-lgdi32"
+fi
+
+AC_SUBST(WIN32_LIBS)
+AM_CONDITIONAL(HAVE_WIN32, $have_win32) 
+
+#
+# We must have some backend defined, in order for the pango-querymodules
+# rule in pango/Makefile.am to work correctly. If you are up to writing
+# a new Pango backend outside of Pango, you are up to sending the necessary
+# patch to fix that rule. :-)
+#
+if $have_freetype || $have_x || $have_xft || $have_win32  ; then : ; else
+  AC_MSG_ERROR([*** Didn't find any of FreeType, X11, or Win32.
+*** Must have at least one backend to build Pango.])
+fi
+
+
+PKG_CHECK_MODULES(BASE_DEPENDENCIES, pango >= $PANGO_REQUIRED_VERSION)
+
+PANGO_MODULE_VERSION=`$PKG_CONFIG --variable=pango_module_version pango`
+AC_SUBST(PANGO_MODULE_VERSION)
+
+PANGO_CFLAGS=`$PKG_CONFIG --cflags pango`
+PANGO_LIBS=`$PKG_CONFIG --cflags pango`
+PANGOFT2_LIBS=`$PKG_CONFIG --cflags pangoft2`
+
+AC_SUBST(PANGO_CFLAGS)
+AC_SUBST(PANGO_LIBS)
+AC_SUBST(PANGOFT2_LIBS)
+
+# Honor aclocal flags
+ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
+
+AC_OUTPUT(
+  Makefile 
+  src/Makefile
+)

@@ -1,0 +1,33 @@
+About
+-----
+	This module implement proper Myanmar text boundary segmentation for pango. 
+This module is based on mymr-pango shaping module, written Ko Tin Myo Htet. 
+However, I have stripped the shaping parts, because most Myanmar fonts 
+available have the shaping rule embedded inside.
+
+	
+Install
+-------
+	See `INSTALL' for generic installaton instructions.
+
+Building
+--------
+
+  1. ./configure --prefix=<prefix>
+  2. make
+  3. `make install' will install myanmar pango module to following path-
+     <prefix>/lib/mymr-pangomod/pango/<mymr-pangomod-version>
+
+     e.g. /usr/lib/mymr-pangomod/pango/0.7.0
+
+  4. create pango rc file ~/.pangorc or <sysconfdir>/pango/pangorc
+     (<sysconfdir>=/etc normally) for global which has-
+     [Pango]
+     ModulesPath=<path to installed mymr-pangomod>:<path to installed pango modules>
+     
+     e.g.
+     [Pango]
+     ModulesPath=/usr/lib/mymr-pangomod/pango/0.7.0:/usr/lib/pango/1.4.0/modules
+     
+  5. run pango-querymodules > <sysconfdir>/pango/pango.modules
+     e.g. pango-querymodules > /etc/pango/pango.modules

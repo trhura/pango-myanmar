@@ -1,0 +1,16 @@
+Source: pango-myanmar
+Priority: optional
+Maintainer: Thura Hlaing <trhura@gmail.com>
+Build-Depends: debhelper (>= 7), autotools-dev, libpango1.0-dev (>= 1.20.1-1)
+Standards-Version: 3.8.0
+Section: libs
+Homepage: http://code.google.com/p/pango-myanmar
+
+Package: pango-myanmar
+Section: libs
+Architecture: any
+Depends: libpango1.0-0 (>= 1.20.1-1)
+Description: Pango module for Myanmar
+ .
+ This package provides third-party plugin for Myanmar text boundary segmetation
+ support in Pango text layout engine.
