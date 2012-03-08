@@ -36,7 +36,7 @@ typedef PangoEngineLangClass MyanmarEngineLangClass;
 #define SCRIPT_ENGINE_NAME "MyanmarScriptEngineLang"
 
 static PangoEngineScriptInfo myanmar_scripts[] = {
-{ PANGO_SCRIPT_MYANMAR, "*" }
+	{ PANGO_SCRIPT_MYANMAR, "*" }
 };
 
 
@@ -67,16 +67,16 @@ myanmar_engine_break (PangoEngineLang *engine,
 	{
 		GUnicodeType type = g_unichar_type (wcs[i]);
 
-		if (type == G_UNICODE_OTHER_LETTER) {
+		if (type	== G_UNICODE_OTHER_LETTER ||
+			wcs[i]	== MYANMAR_SYMBOL_AFOREMENTIONED) {
 			/* All letters (consonants) are character,line breaks.
 			 */
 			attrs[i].is_char_break = TRUE;
 			attrs[i].is_line_break = TRUE;
 			attrs[i].is_cursor_position = TRUE;
 
-			/* Skip marks ...*/
 			gint next = 1;
-			while ((i+next) < n_chars &&
+			while ((i+next) < n_chars && /* Skip marks (medials, vowel) */
 				   g_unichar_type (wcs[i+next]) == G_UNICODE_NON_SPACING_MARK)
 			{
 				if (wcs[i+next] == MYANMAR_SIGN_ASAT)
@@ -84,7 +84,7 @@ myanmar_engine_break (PangoEngineLang *engine,
 					/* If it is followed ASAT, don't break . */
 					attrs[i].is_line_break = FALSE;
 					attrs[i].is_char_break = FALSE;
-					attrs[i].is_cursor_position = FALSE;
+					//attrs[i].is_cursor_position = FALSE;
 
 					/* Howver, if it is infront of kinzi (followed by virama),
 					 * cursor position break should be allowed .
@@ -94,7 +94,18 @@ myanmar_engine_break (PangoEngineLang *engine,
 						attrs[i].is_cursor_position = TRUE;
 					break;
 				}
+
+				if (wcs[i+next] == MYANMAR_SIGN_VIRAMA) {
+					attrs[i].is_char_break = FALSE;
+					attrs[i].is_line_break = FALSE;
+				}
 				next++;
+
+			}
+
+			if (wcs[i] == MYANMAR_LETTER_GREAT_SA) {
+				attrs[i].is_char_break = FALSE;
+				attrs[i].is_line_break = FALSE;
 			}
 
 			/* For stacked consonants & (after) kinzi, doesn't allow break */
