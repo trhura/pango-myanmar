@@ -59,10 +59,11 @@ myanmar_engine_break (PangoEngineLang *engine,
 					  int			   attrs_len)
 {
 
-	gint i;
+	gint i, j;
 	glong n_chars;
 	gunichar *wcs = g_utf8_to_ucs4_fast (text, length, &n_chars);
 
+	/* Determine Character Boundar */
 	for (i = 0; i < n_chars; i++)
 	{
 		GUnicodeType type = g_unichar_type (wcs[i]);
@@ -84,7 +85,7 @@ myanmar_engine_break (PangoEngineLang *engine,
 					/* If it is followed ASAT, don't break . */
 					attrs[i].is_line_break = FALSE;
 					attrs[i].is_char_break = FALSE;
-					//attrs[i].is_cursor_position = FALSE;
+					attrs[i].is_cursor_position = FALSE;
 
 					/* Howver, if it is infront of kinzi (followed by virama),
 					 * cursor position break should be allowed .
@@ -116,6 +117,45 @@ myanmar_engine_break (PangoEngineLang *engine,
 			}
 		}
 	}
+
+	if (wcslen (wcs) < 12)
+		return;
+
+	/* Determine Word Boundaries */
+	gunichar* cluster;
+	gunichar* tmp = wcs;
+	gunichar* syllable[5];
+	gint c_word_start = 0;
+	gint c_pos = 0;
+
+	while (c_pos < wcslen (wcs)) {
+		for (i = 0; tmp != NULL && i < 5; i++) {
+			tmp = next_cluster (tmp, &(syllable[i]));
+		}
+
+		gunichar test[256] =  { L'\0' };
+		for (i -= 1; i > 0; i--) {
+			test[0] = L'\0';
+			//printf ("%d ", i);
+			for (j = 0; j < i; j++) {
+				wcscat (test, syllable[j]);
+			};
+			//g_printf ("sylalble: %ls", test);
+			if (cluster_is_word (test)) {
+				//printf ("word found.\n");
+				break;
+			}
+			//g_free (syllable[i]);
+			puts ();
+		}
+
+		attrs[c_word_start].is_word_start = TRUE;
+		c_word_start = c_pos;
+		c_pos += wcslen (test);
+		attrs[c_pos].is_word_end  = TRUE;
+		attrs[c_pos].is_word_start = TRUE;
+		tmp = wcs + c_pos;
+	} 
 }
 
 static void
@@ -131,11 +171,13 @@ void
 PANGO_MODULE_ENTRY(init) (GTypeModule *module)
 {
 	myanmar_engine_lang_register_type (module);
+	load_wordlist ();
 }
 
 void
 PANGO_MODULE_ENTRY(exit) (void)
 {
+	free_wordlist ();
 }
 
 void
