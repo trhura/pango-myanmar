@@ -25,5 +25,7 @@ gunichar* next_cluster (gunichar* string, gunichar** cluster);
 gunichar* next_n_cluster (gunichar* string, gunichar** cluster, gint n);
 gboolean  cluster_is_word (gunichar* cluster);
 
+gint	  get_max_break_position (GPtrArray *cluster);
+
 void	  load_wordlist ();
 void	  free_wordlist ();

@@ -613,6 +613,8 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+DATRIE_LIBS
+DATRIE_CFLAGS
 PANGOFT2_LIBS
 PANGO_LIBS
 PANGO_CFLAGS
@@ -12199,12 +12201,12 @@ if test -n "$BASE_DEPENDENCIES_CFLAGS"; then
     pkg_cv_BASE_DEPENDENCIES_CFLAGS="$BASE_DEPENDENCIES_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= \$PANGO_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pango >= $PANGO_REQUIRED_VERSION") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= \$PANGO_REQUIRED_VERSION, datrie-0.2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango >= $PANGO_REQUIRED_VERSION, datrie-0.2") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_BASE_DEPENDENCIES_CFLAGS=`$PKG_CONFIG --cflags "pango >= $PANGO_REQUIRED_VERSION" 2>/dev/null`
+  pkg_cv_BASE_DEPENDENCIES_CFLAGS=`$PKG_CONFIG --cflags "pango >= $PANGO_REQUIRED_VERSION, datrie-0.2" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -12216,12 +12218,12 @@ if test -n "$BASE_DEPENDENCIES_LIBS"; then
     pkg_cv_BASE_DEPENDENCIES_LIBS="$BASE_DEPENDENCIES_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= \$PANGO_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pango >= $PANGO_REQUIRED_VERSION") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= \$PANGO_REQUIRED_VERSION, datrie-0.2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango >= $PANGO_REQUIRED_VERSION, datrie-0.2") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_BASE_DEPENDENCIES_LIBS=`$PKG_CONFIG --libs "pango >= $PANGO_REQUIRED_VERSION" 2>/dev/null`
+  pkg_cv_BASE_DEPENDENCIES_LIBS=`$PKG_CONFIG --libs "pango >= $PANGO_REQUIRED_VERSION, datrie-0.2" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -12242,14 +12244,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        BASE_DEPENDENCIES_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "pango >= $PANGO_REQUIRED_VERSION" 2>&1`
+	        BASE_DEPENDENCIES_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "pango >= $PANGO_REQUIRED_VERSION, datrie-0.2" 2>&1`
         else
-	        BASE_DEPENDENCIES_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "pango >= $PANGO_REQUIRED_VERSION" 2>&1`
+	        BASE_DEPENDENCIES_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "pango >= $PANGO_REQUIRED_VERSION, datrie-0.2" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$BASE_DEPENDENCIES_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (pango >= $PANGO_REQUIRED_VERSION) were not met:
+	as_fn_error $? "Package requirements (pango >= $PANGO_REQUIRED_VERSION, datrie-0.2) were not met:
 
 $BASE_DEPENDENCIES_PKG_ERRORS
 
@@ -12290,6 +12292,11 @@ PANGO_LIBS=`$PKG_CONFIG --cflags pango`
 PANGOFT2_LIBS=`$PKG_CONFIG --cflags pangoft2`
 
 
+
+
+
+DATRIE_CFLAGS=`$PKG_CONFIG --cflags datrie-0.2`
+DATRIE_LIBS=`$PKG_CONFIG --libs datrie-0.2`
 
 
 

@@ -149,10 +149,41 @@ gboolean cluster_is_word (gunichar* cluster)
 		return FALSE;
 }
 
+gint get_max_break_position (GPtrArray *clusters)
+{
+	g_return_val_if_fail (trie != NULL, FALSE);
+	
+	int i = 0, j = 0;
+	gint ret = 0;
+	TrieState *state = trie_state_root (trie);
+	wchar_t* cluster;
+	
+	while (i < clusters->len) {
+		cluster = (wchar_t*) g_ptr_array_index (clusters, i);
+
+		j = 0;
+		while (j < wcslen (cluster)) {
+			if (trie_state_walk (cluster[j]))
+				j++;
+			else
+				goto break;
+		}
+		ret += j;
+		i++; 
+	}
+
+	break:
+		if (i) {
+			return ret;
+		}
+		else
+			return wcslen (i);
+}
+
 void load_wordlist ()
 {
 	g_return_if_fail (trie == NULL);
-	trie = trie_new_from_file ("/home/trhura/Development/pango-myanmar/data/mywords.tri");
+	trie = trie_new_from_file ("/home/trh/Development/pango-myanmar/data/mywords.tri");
 }
 
 void free_wordlist ()

@@ -2,7 +2,7 @@
 ခ	k
 ဂ	k
 ဃ	g
-င	ng
+င	ñ
 စ	s
 ဆ	s
 ဇ	z
@@ -20,9 +20,9 @@
 န	n
 ဏ	n
 ပ	p
-ဖ	ṕ
-ဗ	b
-ဘ	ṕ
+ဖ	p
+ဗ	p
+ဘ	p
 မ	m
 ယ	y
 ရ	y
@@ -32,7 +32,6 @@
 သ	ṫ
 ဟ	h
 အ	a
-
 ဧ	ē
 ၏	ē
 ဣ	ī
@@ -56,55 +55,79 @@
 ေ	e
 ာ	a
 ဲ	è
+ယ်	è 
+
 ဝိ	i
 ဝီ	i
+ည်	i
+
 ု	u
 ူ	u
+
 ို	o
-ော	u
+ော	aw
 ော်	aw
 
 က်	at
 တ်	at
 ပ်	at
+ခ်	at
+ဂ်	at
+ဒ်	at
+ဗ်	at
+ဘ်	at
+ဝ်	at
+
 မ်	an
 န်	an
+ဏ်	an
+ာန်	an
 ံ	an
-ယ်	è 
+
 စ်	it
-ည်	e
+ိစ်	it
 င်	in
 ဉ်	in
 
 ိုင်	aing
 ောင်	aung
-
-ိုက်	aik
 ောက်	auk
 
-ိတ်	eik
-ုတ်	ôk
-ွတ်	ut
-ေတ်	it
+ိုက်	aik
+ိုဒ်	aik
 
+ေတ်	it
 
 ိန်	ein
 ိမ်	ein
+ိလ်	ein
+
 ိပ်	eik
+ိဗ်	eik
+ိတ်	eik
+
+ုက်	ôk
+ုပ်	ôk
+ုတ်	ôk
 
 ံု	ôn
 ုန်	ôn
-ုပ်	ôk
 ုမ်	ôn
-
-ွန်	un
-ွပ်	ut
-ွမ်	un
+ုလ်	ôn
 
 ဝ = wu
 
-
-get syllable
+get cluster
+	only one consonant
+		-> convert to + a
+		-> အ, indepen vowels -> alone
+	otherwise
+		-> consonant
+			-> a, use vowel sound
+		-> medial
+		-> else
+			-> ignore aukamyint, visarga
+	
 	-> first consonant, only one codepoint
 	one codepoint (one consoant)
 		-> value + a

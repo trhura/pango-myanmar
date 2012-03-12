@@ -28,6 +28,7 @@
 #include <pango/pango-break.h>
 
 #include "myanmar.h"
+#include "mystr.h"
 
 /* No extra fields needed */
 typedef PangoEngineLang		 MyanmarEngineLang;
@@ -121,41 +122,48 @@ myanmar_engine_break (PangoEngineLang *engine,
 	if (wcslen (wcs) < 12)
 		return;
 
-	/* Determine Word Boundaries */
-	gunichar* cluster;
-	gunichar* tmp = wcs;
-	gunichar* syllable[5];
-	gint c_word_start = 0;
-	gint c_pos = 0;
+	/*	Determine Word Boundaries */
+	/* gunichar* cluster; */
+	/* gunichar* tmp = wcs; */
+	/* gunichar* syllable[5]; */
+	/* gint c_word_start = 0; */
+	/* gint c_pos = 0; */
 
-	while (c_pos < wcslen (wcs)) {
-		for (i = 0; tmp != NULL && i < 5; i++) {
-			tmp = next_cluster (tmp, &(syllable[i]));
-		}
+	/* while (c_pos < wcslen (wcs)) { */
+	/*  for (i = 0; tmp != NULL && i < 5; i++) { */
+	/*      tmp = next_cluster (tmp, &(syllable[i])); */
+	/*  } */
 
-		gunichar test[256] =  { L'\0' };
-		for (i -= 1; i > 0; i--) {
-			test[0] = L'\0';
-			//printf ("%d ", i);
-			for (j = 0; j < i; j++) {
-				wcscat (test, syllable[j]);
-			};
-			//g_printf ("sylalble: %ls", test);
-			if (cluster_is_word (test)) {
-				//printf ("word found.\n");
-				break;
-			}
-			//g_free (syllable[i]);
-			puts ();
-		}
+	/*  gunichar test[256] =  { L'\0' }; */
+	/*  for (i -= 1; i > 0; i--) { */
+	/*      test[0] = L'\0'; */
+	/*      //printf ("%d ", i); */
+	/*      for (j = 0; j < i; j++) { */
+	/*          wcscat (test, syllable[j]); */
+	/*      }; */
+	/*      //g_printf ("sylalble: %ls", test); */
+	/*      if (cluster_is_word (test)) { */
+	/*          //printf ("word found.\n"); */
+	/*          break; */
+	/*      } */
+	/*      //g_free (syllable[i]);  */
+	/*  } */
 
-		attrs[c_word_start].is_word_start = TRUE;
-		c_word_start = c_pos;
-		c_pos += wcslen (test);
-		attrs[c_pos].is_word_end  = TRUE;
-		attrs[c_pos].is_word_start = TRUE;
-		tmp = wcs + c_pos;
-	} 
+	/*  attrs[c_word_start].is_word_start = TRUE; */
+	/*  c_word_start = c_pos; */
+	/*  c_pos += wcslen (test); */
+	/*  attrs[c_pos].is_word_end  = TRUE; */
+	/*  attrs[c_pos].is_word_start = TRUE; */
+	/*  tmp = wcs + c_pos; */
+	/* } */
+
+	i = 0;
+	GPtrArray *clusters = mystr_get_clusters (wcs); 
+
+	while (
+	get_max_break_position (clusters);
+	g_ptr_array_free (clusters, TRUE);
+
 }
 
 static void
