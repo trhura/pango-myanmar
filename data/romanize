@@ -1,0 +1,128 @@
+က	k
+ခ	k
+ဂ	k
+ဃ	g
+င	ng
+စ	s
+ဆ	s
+ဇ	z
+ဈ	z
+ည	ń
+ဉ	ń
+တ	t
+ထ	t
+ဋ	t
+ဌ	t
+ဒ	d
+ဍ	d
+ဓ	d
+ဎ	d
+န	n
+ဏ	n
+ပ	p
+ဖ	ṕ
+ဗ	b
+ဘ	ṕ
+မ	m
+ယ	y
+ရ	y
+လ	l
+ဠ	l
+ဝ	w
+သ	ṫ
+ဟ	h
+အ	a
+
+ဧ	ē
+၏	ē
+ဣ	ī
+ဤ	ī
+ဥ	ū
+ဦ	ū
+ဩ	ŵ
+ဪ	ŵ
+
+ြ	y
+ျ	y
+ွ	w
+ှ	-
+ျှ	y
+ြှ	y
+ြွ	yw
+ျွ	yw
+ြွှ	yw
+ျွှ	yw
+
+ေ	e
+ာ	a
+ဲ	è
+ဝိ	i
+ဝီ	i
+ု	u
+ူ	u
+ို	o
+ော	u
+ော်	aw
+
+က်	at
+တ်	at
+ပ်	at
+မ်	an
+န်	an
+ံ	an
+ယ်	è 
+စ်	it
+ည်	e
+င်	in
+ဉ်	in
+
+ိုင်	aing
+ောင်	aung
+
+ိုက်	aik
+ောက်	auk
+
+ိတ်	eik
+ုတ်	ôk
+ွတ်	ut
+ေတ်	it
+
+
+ိန်	ein
+ိမ်	ein
+ိပ်	eik
+
+ံု	ôn
+ုန်	ôn
+ုပ်	ôk
+ုမ်	ôn
+
+ွန်	un
+ွပ်	ut
+ွမ်	un
+
+ဝ = wu
+
+
+get syllable
+	-> first consonant, only one codepoint
+	one codepoint (one consoant)
+		-> value + a
+		-> if a beginning
+			-> a => a
+			-> otherwise, vowel
+			-> in middle, use dash -
+		-> independent vowel
+			-> in middle use dash
+	alternative
+		-> except at begining/or upperstacked 
+			-> use alternative
+	stacked
+		-> upper char do not use alternative
+	separate
+		-> n-g
+		-> n-y
+		-> t-h
+	Skip 
+		-> tone marks
+		
