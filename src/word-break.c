@@ -79,17 +79,15 @@ gint	wbrk_get_next_brkpos ()
 
 	gint j, i = 0;
 	gint ret = 0;
-	gint length;
 	TrieState *state = trie_root (trie);
 	wchar_t* cluster;
 
 	while (i < cluster_array->len) {
-		cluster = (wchar_t*) g_ptr_array_index (cluster_array, i); 
+		cluster = (wchar_t*) g_ptr_array_index (cluster_array, i);
 //		g_printf ("\tchecking for cluster %d: %ls\n", i, cluster);
 
 		j = 0;
-		length = wcslen (cluster);
-		while (j < length) {
+		while (j < wcslen (cluster)) {
 //			g_printf ("\t\tchecking character: %lc\n", cluster[j]);
 			if (trie_state_walk (state, cluster[j])) {
 //				printf ("\t\t\twalking...\n");
@@ -100,13 +98,17 @@ gint	wbrk_get_next_brkpos ()
 			}
 		}
 
-		g_ptr_array_remove_index (cluster_array, i);
-		ret += j;
+		if (trie_state_is_terminal (state)) {
+			ret += j;
+			g_ptr_array_remove_index (cluster_array, i);
+		}
 	}
 
 outer:
-	if (ret == 0)
-		ret = length;
-//	g_printf ("returning ret, %d, count, %d\n", ret, i);
+	if (ret == 0) {
+		g_ptr_array_remove_index (cluster_array, i);
+		ret = wcslen (cluster);
+	}
+//	g_printf ("returning ret, %d", ret);
 	return ret;
 }

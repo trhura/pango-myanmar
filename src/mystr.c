@@ -23,15 +23,15 @@
  * Created: 2011-01-08
  */
 
+#include <mystr.h>
+#include <myctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <string.h>
+#include <string.h> 
 
-#include "myanmar.h"
-#include "myctype.h"
-#include "mystr.h"
 #include "mystr-priv.h"
+#include "myanmar.h"
 
 /**
  * @brief       Save current cluster and skip to the start of next cluster.
@@ -55,7 +55,17 @@ wchar_t* mystr_next_cluster (wchar_t *string, wchar_t **cluster)
     int length = wcslen (string);
     int cluster_length = 0;
 
-    while (!my_wcismyletter (string[i]) && i < length) {
+    if (length == 0)
+        goto notfound;
+
+    if (!my_wcismyanmar  (string[i]))
+    {
+        while (!my_wcismyanmar (string[j]) && j <length)
+            j++;
+        goto finish;
+    }
+
+    if (!my_wcismyletter (string[i]) && i < length) {
         /* Find the first consonant */
         if (my_wcismydigit(string[i]) ||
             my_wcismypunct(string[i]) ||
@@ -63,12 +73,12 @@ wchar_t* mystr_next_cluster (wchar_t *string, wchar_t **cluster)
             j = i + 1;
             goto finish;
         }
-        i++;
-    }
 
-    if (i == length)
-        /* if no consonant is found */
-        goto notfound;
+        while (!my_wcismyletter (string[j]) && j <length)
+            j++;
+
+        goto finish;
+    }
 
     j = i + 1;
     int devowelized;
@@ -78,7 +88,8 @@ wchar_t* mystr_next_cluster (wchar_t *string, wchar_t **cluster)
 
         while (!my_wcismyletter (string[j]) && j < length) {
             /* find the next consonant */
-            if (my_wcismydigit(string[j]) ||
+            if (!my_wcismyanmar (string[j]) ||
+                my_wcismydigit(string[j]) ||
                 my_wcismypunct(string[j]) ||
                 my_wcismyindependsymbol (string[j])) {
                 goto finish;
@@ -117,7 +128,7 @@ wchar_t* mystr_next_cluster (wchar_t *string, wchar_t **cluster)
 
     } while (devowelized != 0);
 
-finish:
+ finish:
     if (cluster) {
         cluster_length = j - i;
 
@@ -129,7 +140,7 @@ finish:
     }
     return string+j;
 
-notfound:
+ notfound:
     if (cluster)
         *cluster = NULL;
     return NULL;
@@ -167,5 +178,5 @@ void    mystr_cluster_iter_free (ClusterIter* iter)
 }
 
 /*
-vi:ts=4:ai:expandtab
+  vi:ts=4:ai:expandtab
 */

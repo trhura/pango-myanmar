@@ -31,6 +31,7 @@
  * @file   mystr.h
  * @brief  various Burmese string related functions
  */
+#include <wchar.h>
 
 typedef struct _ClusterIter ClusterIter;
 

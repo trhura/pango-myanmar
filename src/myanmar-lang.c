@@ -126,6 +126,7 @@ myanmar_engine_break (PangoEngineLang *engine,
 		return;
 
 	while (cword_end < wcslen (wcs)) {
+		//		g_printf ("\n\ngetting position");
 		position =  wbrk_get_next_brkpos ();
 
 		if (position == 0)
