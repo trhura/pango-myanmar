@@ -31,15 +31,12 @@
  * @file   mystr.h
  * @brief  various Burmese string related functions
  */
-#include <glib.h>
 
 typedef struct _ClusterIter ClusterIter;
 
 ClusterIter*    mystr_cluster_iter_new  (const wchar_t* string);
 wchar_t*        mystr_cluster_iter_next (ClusterIter* iter);
 void            mystr_cluster_iter_free (ClusterIter* iter);
-
-GPtrArray*      mystr_get_clusters (const wchar_t* string);
 
 
 #endif  /* BURMESE_MYSTR_H */

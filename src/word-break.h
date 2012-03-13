@@ -21,11 +21,11 @@
 
 #include <glib.h>
 
-gunichar* next_cluster (gunichar* string, gunichar** cluster);
-gunichar* next_n_cluster (gunichar* string, gunichar** cluster, gint n);
-gboolean  cluster_is_word (gunichar* cluster);
+void	wbrk_load_wordlist ();
+void	wbrk_free_wordlist ();
+gint	wbrk_get_next_brkpos ();
+gboolean	wbrk_wordlist_is_loaded ();
+gboolean	wbrk_prepare (const wchar_t* string);
 
-gint	  get_max_break_position (GPtrArray *cluster);
 
-void	  load_wordlist ();
-void	  free_wordlist ();
+

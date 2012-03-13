@@ -139,7 +139,7 @@ ClusterIter*    mystr_cluster_iter_new  (const wchar_t* string)
 {
     if (string == NULL)
         return NULL;
-    
+
     ClusterIter *iter = (ClusterIter*) malloc (sizeof (ClusterIter));
     iter->string    = wcsdup (string);
     iter->position  = iter->string;
@@ -147,7 +147,7 @@ ClusterIter*    mystr_cluster_iter_new  (const wchar_t* string)
 
     return iter;
 }
-    
+
 wchar_t*    mystr_cluster_iter_next (ClusterIter* iter)
 {
     assert (iter != NULL);
@@ -155,7 +155,7 @@ wchar_t*    mystr_cluster_iter_next (ClusterIter* iter)
     wchar_t* cluster;
 
     iter->position = mystr_next_cluster (iter->position, &cluster);
-    return cluster; 
+    return cluster;
 }
 
 void    mystr_cluster_iter_free (ClusterIter* iter)
@@ -166,31 +166,6 @@ void    mystr_cluster_iter_free (ClusterIter* iter)
     free (iter);
 }
 
-GPtrArray*   mystr_get_clusters (const wchar_t *string)
-{
-    if (string == NULL)
-        return NULL;
-
-    int i = 0;
-    ClusterIter *iter   = mystr_cluster_iter_new (string);
-    wchar_t* cluster;
-    GPtrArray *clusters = g_ptr_array_new ();
-
-    while ((cluster = mystr_cluster_iter_next (iter)) != NULL) {
-        /* if (i >= size) { */
-        /*     size *= 2; */
-        /*     g_printf ("%d %d\n", i, size); */
-        /*     clusters = (wchar_t**) realloc (clusters, sizeof(wchar_t*) * size); */
-        /* } */
-        g_ptr_array_add (clusters, cluster);
-        i++;
-    }
-
-//    *count = --i;
-//    clusters = (wchar_t**) realloc (clusters, sizeof(wchar_t*) * i);
-
-    return clusters;
-}
 /*
 vi:ts=4:ai:expandtab
 */

@@ -28,7 +28,7 @@
 #include <pango/pango-break.h>
 
 #include "myanmar.h"
-#include "mystr.h"
+#include "word-break.h"
 
 /* No extra fields needed */
 typedef PangoEngineLang		 MyanmarEngineLang;
@@ -49,7 +49,6 @@ static PangoEngineInfo script_engines[] = {
 		myanmar_scripts, G_N_ELEMENTS(myanmar_scripts)
 	}
 };
-
 
 static void
 myanmar_engine_break (PangoEngineLang *engine,
@@ -119,51 +118,26 @@ myanmar_engine_break (PangoEngineLang *engine,
 		}
 	}
 
-	if (wcslen (wcs) < 12)
+	int cword_start = 0;
+	int cword_end	= 0;
+	int position	= 0;
+
+	if (wbrk_prepare (wcs) == FALSE)
 		return;
 
-	/*	Determine Word Boundaries */
-	/* gunichar* cluster; */
-	/* gunichar* tmp = wcs; */
-	/* gunichar* syllable[5]; */
-	/* gint c_word_start = 0; */
-	/* gint c_pos = 0; */
+	while (cword_end < wcslen (wcs)) {
+		position =  wbrk_get_next_brkpos ();
 
-	/* while (c_pos < wcslen (wcs)) { */
-	/*  for (i = 0; tmp != NULL && i < 5; i++) { */
-	/*      tmp = next_cluster (tmp, &(syllable[i])); */
-	/*  } */
+		if (position == 0)
+			break;
 
-	/*  gunichar test[256] =  { L'\0' }; */
-	/*  for (i -= 1; i > 0; i--) { */
-	/*      test[0] = L'\0'; */
-	/*      //printf ("%d ", i); */
-	/*      for (j = 0; j < i; j++) { */
-	/*          wcscat (test, syllable[j]); */
-	/*      }; */
-	/*      //g_printf ("sylalble: %ls", test); */
-	/*      if (cluster_is_word (test)) { */
-	/*          //printf ("word found.\n"); */
-	/*          break; */
-	/*      } */
-	/*      //g_free (syllable[i]);  */
-	/*  } */
+		cword_start = cword_end;
+		cword_end  += position;
 
-	/*  attrs[c_word_start].is_word_start = TRUE; */
-	/*  c_word_start = c_pos; */
-	/*  c_pos += wcslen (test); */
-	/*  attrs[c_pos].is_word_end  = TRUE; */
-	/*  attrs[c_pos].is_word_start = TRUE; */
-	/*  tmp = wcs + c_pos; */
-	/* } */
-
-	i = 0;
-	GPtrArray *clusters = mystr_get_clusters (wcs); 
-
-	while (
-	get_max_break_position (clusters);
-	g_ptr_array_free (clusters, TRUE);
-
+		attrs[cword_start].is_word_start = TRUE;
+		attrs[cword_end].is_word_start = TRUE;
+		attrs[cword_end].is_word_end = TRUE;
+	}
 }
 
 static void
@@ -179,13 +153,13 @@ void
 PANGO_MODULE_ENTRY(init) (GTypeModule *module)
 {
 	myanmar_engine_lang_register_type (module);
-	load_wordlist ();
+	wbrk_load_wordlist ();
 }
 
 void
 PANGO_MODULE_ENTRY(exit) (void)
 {
-	free_wordlist ();
+	wbrk_free_wordlist ();
 }
 
 void
