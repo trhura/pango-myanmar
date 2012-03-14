@@ -135,9 +135,13 @@ myanmar_engine_break (PangoEngineLang *engine,
 		cword_start = cword_end;
 		cword_end  += position;
 
+		// if(my_wcismyanmar(wcs[cword_start]))
 		attrs[cword_start].is_word_start = TRUE;
+
+		//if(my_wcismyanmar(wcs[cword_end])) {
 		attrs[cword_end].is_word_start = TRUE;
 		attrs[cword_end].is_word_end = TRUE;
+		//}
 	}
 }
 
