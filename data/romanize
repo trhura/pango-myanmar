@@ -1,94 +1,82 @@
-က	k
-ခ	k
-ဂ	k
-ဃ	g
-င	ñ
-စ	s
-ဆ	s
-ဇ	z
-ဈ	z
-ည	ń
-ဉ	ń
-တ	t
-ထ	t
-ဋ	t
-ဌ	t
-ဒ	d
-ဍ	d
-ဓ	d
-ဎ	d
-န	n
-ဏ	n
-ပ	p
-ဖ	p
-ဗ	p
-ဘ	p
-မ	m
-ယ	y
-ရ	y
-လ	l
-ဠ	l
-ဝ	w
-သ	ṫ
-ဟ	h
-အ	a
-ဧ	ē
-၏	ē
-ဣ	ī
-ဤ	ī
-ဥ	ū
-ဦ	ū
-ဩ	ŵ
-ဪ	ŵ
+က	က
+ခ	က
+ဂ	က
+ဃ	က
+င	င
+စ	စ
+ဆ	စ
+ဇ	ဇ
+ဈ	ဇ
+ည	ည
+ဉ	ဉ
+တ	တ
+ထ	တ
+ဋ	တ
+ဌ	တ
+ဒ	ဒ
+ဍ	ဒ
+ဓ	ဒ
+ဎ	ဒ
+န	န
+ဏ	န
+ပ	ပ
+ဖ	ပ
+ဗ	ပ
+ဘ	ပ
+မ	မ
+ယ	ရ
+ရ	ရ
+လ	လ
+ဠ	လ
+ဝ	ဝ
+သ	သ
+ဟ	ဟ
+အ	အ
 
-ြ	y
-ျ	y
-ွ	w
+ြ	ြ
+ျ	ြ
+ွ	ွ
 ှ	-
-ျှ	y
-ြှ	y
-ြွ	yw
-ျွ	yw
-ြွှ	yw
-ျွှ	yw
 
-ေ	e
-ာ	a
-ဲ	è
-ယ်	è 
+ေ	ေ
+ာ	ာ
+ဲ	ဲ
+ယ်	ယ် 
 
-ဝိ	i
-ဝီ	i
+ဝိ	ိ
+ဝီ	ိ
 ည်	i
 
-ု	u
-ူ	u
+ု	ု
+ူ	ု
 
-ို	o
-ော	aw
-ော်	aw
+ို	ို
+ော	ော
+ော်	ော
 
-က်	at
-တ်	at
-ပ်	at
-ခ်	at
-ဂ်	at
-ဒ်	at
-ဗ်	at
-ဘ်	at
-ဝ်	at
+က်	က်
+ခ်	က်
+ဂ်	က်
+တ်	က်
+ပ်	က်
+ဒ်	က်
+ဗ်	က်
+ဘ်	က်
+ဝ်	က်
+ဌ်	က်
 
-မ်	an
-န်	an
-ဏ်	an
+မ်	န်
+န်	န်
+ဏ်	န်
+လ်	န်
+ံ	န်
+
+စ်	စ်
+ဇ်	ဇ်
+င်	င်
+ဉ်	င်
+
 ာန်	an
-ံ	an
-
-စ်	it
-ိစ်	it
-င်	in
-ဉ်	in
-
 ိုင်	aing
 ောင်	aung
 ောက်	auk
@@ -114,6 +102,16 @@
 ုန်	ôn
 ုမ်	ôn
 ုလ်	ôn
+ုဏ်	ôn
+
+ဧ	ဧ
+၏	၏
+ဣ	ī
+ဤ	ī
+ဥ	ū
+ဦ	ū
+ဩ	ŵ
+ဪ	ŵ
 
 ဝ = wu
 
@@ -127,25 +125,5 @@ get cluster
 		-> medial
 		-> else
 			-> ignore aukamyint, visarga
-	
-	-> first consonant, only one codepoint
-	one codepoint (one consoant)
-		-> value + a
-		-> if a beginning
-			-> a => a
-			-> otherwise, vowel
-			-> in middle, use dash -
-		-> independent vowel
-			-> in middle use dash
-	alternative
-		-> except at begining/or upperstacked 
-			-> use alternative
-	stacked
-		-> upper char do not use alternative
-	separate
-		-> n-g
-		-> n-y
-		-> t-h
-	Skip 
-		-> tone marks
+
 		

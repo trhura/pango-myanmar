@@ -27,5 +27,3 @@ gint	wbrk_get_next_brkpos ();
 gboolean	wbrk_wordlist_is_loaded ();
 gboolean	wbrk_prepare (const wchar_t* string);
 
-
-

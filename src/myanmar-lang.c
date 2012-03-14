@@ -126,14 +126,16 @@ myanmar_engine_break (PangoEngineLang *engine,
 		return;
 
 	while (cword_end < wcslen (wcs)) {
-		//		g_printf ("\n\ngetting position");
+		g_printf ("\n\ngetting position ---%ls---\n", wcs+cword_end+1);
 		position =  wbrk_get_next_brkpos ();
 
-		if (position == 0)
+		if (position == 0) {
+			g_printf ("position zero, breaking\n");
 			break;
+		}
 
 		cword_start = cword_end;
-		cword_end  += position;
+		cword_end  += position; 
 
 		// if(my_wcismyanmar(wcs[cword_start]))
 		attrs[cword_start].is_word_start = TRUE;
