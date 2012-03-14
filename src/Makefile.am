@@ -7,9 +7,6 @@ myanmar_lang_sources =	myanmar.h \
 			myctype.c \
 			word-break.h \
 			word-break.c \
-			mystr.c	\
-			mystr-prvi.h	\
-			mystr.h	\
 		    	myanmar-lang.c 
 
 pangolibs = $(PANGO_LIBS) $(DATRIE_LIBS)

@@ -21,11 +21,9 @@
 
 #include <datrie/trie.h>
 #include "word-break.h"
-#include "myanmar.h"
-#include "mystr.h"
+#include "myanmar.h" 
 
 static Trie *trie;
-static GPtrArray *cluster_array;
 
 void	wbrk_load_wordlist ()
 {
@@ -44,76 +42,38 @@ gboolean	wbrk_wordlist_is_loaded ()
 	return trie != NULL;
 }
 
-gboolean	wbrk_prepare (const wchar_t *string)
-{
-	if (string == NULL || trie == NULL)
-		return FALSE;
-
-	if (cluster_array != NULL)
-	{
-		g_ptr_array_free (cluster_array, TRUE);
-	}
-
-	int i = 0;
-	wchar_t* cluster;
-	cluster_array = g_ptr_array_new_with_free_func (g_free);
-	//	g_debug ("string to break word = %ls\n", string);
-	ClusterIter *iter	= mystr_cluster_iter_new (string);
-
-	while ((cluster = mystr_cluster_iter_next (iter)) != NULL) {
-		//		g_debug ("\tcluster = %ls\n",cluster);
-		g_ptr_array_add (cluster_array, cluster);
-		i++;
-	}
-
-	return TRUE;
-}
-
-gint	wbrk_get_next_brkpos ()
+gint	wbrk_get_next_brkpos (wchar_t *string)
 {
 	g_assert (trie != NULL);
-	g_assert (cluster_array != NULL);
-
-	// g_printf ("length = %d\n", cluster_array->len);
-
-	if (cluster_array->len < 0)
-		return 0;
 
 	gint j, i = 0;
 	gint ret = 0;
-	TrieState *state = trie_root (trie);
-	wchar_t* cluster;
+	TrieState *state = trie_root (trie); 
 
-	while (i < cluster_array->len) {
-		cluster = (wchar_t*) g_ptr_array_index (cluster_array, i);
-		// g_printf ("\tchecking for cluster %d: %ls\n", i, cluster);
+	int length = wcslen (string);
 
-		j = 0;
-		while (j < wcslen (cluster)) {
-			// g_printf ("\t\tchecking character: %lc\n", cluster[j]);
-			if (trie_state_walk (state, cluster[j])) {
-				// g_printf ("\t\t\twalking...\n");
-				j++;
-			} else {
-				// g_printf ("\t\tbreaking ret=%d...\n", ret);
+	if (length == 0)
+		return 0;
 
-				if (ret)
-					/* return is not zero */
-					return ret;
+	j = 0;
 
-				ret += wcslen (cluster);
-				// g_printf ("\t\t %ls not found\n", cluster);
-				g_ptr_array_remove_index (cluster_array, i);
-				break;
+	while (j < length && 
+		   (!my_wcismyanmar (string[j]) ||
+			 my_wcismydigit (string[j])))
+		j++;
+	
+	while (j < length) {
+		
+		if (trie_state_walk (state, string[j])) {
+			j++;
+
+			if (trie_state_is_terminal (state)) {
+				ret = j;
 			}
-		}
-
-		if (trie_state_is_terminal (state)) {
-			ret += j;
-			// g_printf ("\t\adding ret += %d\n", j);
-			g_ptr_array_remove_index (cluster_array, i);
+		} else {
+			break;
 		}
 	}
 
-	return ret;
+	return ret; 
 }

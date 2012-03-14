@@ -79,7 +79,7 @@ pango_myanmar_fc_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(pango_myanmar_fc_la_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_FREETYPE_TRUE@am_pango_myanmar_fc_la_rpath = -rpath $(moduledir)
 pango_myanmar_lang_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am__objects_2 = myctype.lo word-break.lo mystr.lo myanmar-lang.lo
+am__objects_2 = myctype.lo word-break.lo myanmar-lang.lo
 am_pango_myanmar_lang_la_OBJECTS = $(am__objects_2)
 pango_myanmar_lang_la_OBJECTS = $(am_pango_myanmar_lang_la_OBJECTS)
 pango_myanmar_lang_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -247,9 +247,6 @@ myanmar_lang_sources = myanmar.h \
 			myctype.c \
 			word-break.h \
 			word-break.c \
-			mystr.c	\
-			mystr-prvi.h	\
-			mystr.h	\
 		    	myanmar-lang.c 
 
 pangolibs = $(PANGO_LIBS) $(DATRIE_LIBS)
@@ -354,7 +351,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myanmar-fc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myanmar-lang.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myctype.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mystr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/word-break.Plo@am__quote@
 
 .c.o:

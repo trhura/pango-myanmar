@@ -23,7 +23,5 @@
 
 void	wbrk_load_wordlist ();
 void	wbrk_free_wordlist ();
-gint	wbrk_get_next_brkpos ();
-gboolean	wbrk_wordlist_is_loaded ();
-gboolean	wbrk_prepare (const wchar_t* string);
-
+gint	wbrk_get_next_brkpos (wchar_t* string);
+gboolean	wbrk_wordlist_is_loaded (); 
