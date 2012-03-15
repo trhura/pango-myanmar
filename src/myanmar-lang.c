@@ -28,7 +28,7 @@
 #include <pango/pango-break.h>
 
 #include "myanmar.h"
-#include "word-break.h"
+#include "wbrk.h"
 
 /* No extra fields needed */
 typedef PangoEngineLang		 MyanmarEngineLang;
@@ -118,12 +118,15 @@ myanmar_engine_break (PangoEngineLang *engine,
 		}
 	}
 
+	if  (!wbrk_is_ready ())
+		return;
+
 	int cword_start = 0;
 	int cword_end	= 0;
 	int position	= 0;
 
 	while (cword_end < wcslen (wcs)) {
-		g_printf ("---%ls---\n", wcs+cword_end);
+		//g_printf ("---%ls---\n", wcs+cword_end);
 		position =  wbrk_get_next_brkpos (wcs+cword_end);
 
 		if (position == 0) {
@@ -153,13 +156,13 @@ void
 PANGO_MODULE_ENTRY(init) (GTypeModule *module)
 {
 	myanmar_engine_lang_register_type (module);
-	wbrk_load_wordlist ();
+	wbrk_init ();
 }
 
 void
 PANGO_MODULE_ENTRY(exit) (void)
 {
-	wbrk_free_wordlist ();
+	wbrk_unload ();
 }
 
 void

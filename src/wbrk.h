@@ -21,7 +21,8 @@
 
 #include <glib.h>
 
-void	wbrk_load_wordlist ();
-void	wbrk_free_wordlist ();
-gint	wbrk_get_next_brkpos (wchar_t* string);
-gboolean	wbrk_wordlist_is_loaded (); 
+void	wbrk_init ();
+void	wbrk_unload ();
+gboolean	wbrk_is_ready ();
+gint	wbrk_get_next_brkpos (gunichar *string);
+
