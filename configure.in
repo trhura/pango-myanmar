@@ -218,7 +218,7 @@ AC_SUBST(DATRIE_LIBS)
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
 AC_OUTPUT(
-  Makefile 
-  src/Makefile
+  Makefile
   data/Makefile
+  src/Makefile 
 )

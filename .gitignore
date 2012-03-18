@@ -1,5 +1,3 @@
 autom4te.cache
-debian/.~ src/.~
-src/.libs/
-src/.~/
-
+data/.~
+src/.~

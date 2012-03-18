@@ -249,6 +249,7 @@ myanmar_lang_sources = myanmar.h \
 			myctype.c \
 			wbrk.h	  \
 			wbrk.c	  \
+			map.h	\
 		    	myanmar-lang.c 
 
 pangolibs = $(PANGO_LIBS) $(DATRIE_LIBS)
@@ -258,6 +259,7 @@ moduledir = $(libdir)/pango/$(PANGO_MODULE_VERSION)/modules
 @HAVE_FREETYPE_TRUE@PANGO_FC_INCLUDES = $(FREETYPE_CFLAGS)
 @HAVE_FREETYPE_TRUE@PANGO_FC_MODULES = pango-myanmar-fc.la
 INCLUDES = \
+	-std=c99	    \
 	-DPANGO_ENABLE_ENGINE	\
 	-DPANGO_ENABLE_BACKEND  \
 	-DG_DISABLE_DEPRECATED	\

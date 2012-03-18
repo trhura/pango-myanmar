@@ -24,6 +24,8 @@
 
 
 #include <glib.h>
+#include <wchar.h>
+#include <string.h>
 #include <pango/pango-engine.h>
 #include <pango/pango-break.h>
 
@@ -124,10 +126,12 @@ myanmar_engine_break (PangoEngineLang *engine,
 	int cword_start = 0;
 	int cword_end	= 0;
 	int position	= 0;
+	gunichar *nwcs =  wbrk_normalize_string (wcs);
 
+	g_printf ("\t\t---%ls---\n", nwcs);
 	while (cword_end < wcslen (wcs)) {
-		//g_printf ("---%ls---\n", wcs+cword_end);
-		position =  wbrk_get_next_brkpos (wcs+cword_end);
+		g_printf ("---%ls---\n", nwcs+cword_end);
+		position =  wbrk_get_next_brkpos (nwcs+cword_end);
 
 		if (position == 0) {
 			break;

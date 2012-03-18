@@ -1,5 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-CLEANFILES = mybrk.tri mydict.txt
+CLEANFILES = mybrk.tri mydict.txt map.sed map.h
 
 dictdatadir = $(datadir)/libburmese
 
@@ -17,6 +17,10 @@ EXTRA_DIST = mybrk.abm $(mydict_SRC)
 
 mydict.txt: $(mydict_SRC)
 	cat $(mydict_SRC) | LC_ALL=C sort -u > mydict.txt
+	python generator.py map
+	sed -i -f map.sed mydict.txt
+	sed -i -e "/^\s*$$/d" mydict.txt
+	cp map.h ../src/
 
 mybrk.tri: mydict.txt
 	if test ! -e mybrk.abm; then \

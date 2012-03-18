@@ -23,6 +23,9 @@
 
 void	wbrk_init ();
 void	wbrk_unload ();
-gboolean	wbrk_is_ready ();
 gint	wbrk_get_next_brkpos (gunichar *string);
+gunichar*	wbrk_normalize_string (gunichar *string);
+gboolean	wbrk_is_ready ();
+
+
 

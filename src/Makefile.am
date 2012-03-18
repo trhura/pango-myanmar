@@ -7,6 +7,7 @@ myanmar_lang_sources =	myanmar.h \
 			myctype.c \
 			wbrk.h	  \
 			wbrk.c	  \
+			map.h	\
 		    	myanmar-lang.c 
 
 pangolibs = $(PANGO_LIBS) $(DATRIE_LIBS)
@@ -21,6 +22,7 @@ PANGO_FC_MODULES = pango-myanmar-fc.la
 endif
 
 INCLUDES =			\
+	-std=c99	    \
 	-DPANGO_ENABLE_ENGINE	\
 	-DPANGO_ENABLE_BACKEND  \
 	-DG_DISABLE_DEPRECATED	\
