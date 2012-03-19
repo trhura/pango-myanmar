@@ -34,7 +34,7 @@ static Trie *trie;
 void	wbrk_init ()
 {
 	if (trie == NULL)
-		trie = trie_new_from_file ("/home/trhura/Development/pango-myanmar/data/mybrk.tri");
+		trie = trie_new_from_file ("/home/trh/Development/pango-myanmar/data/mybrk.tri");
 }
 
 void	wbrk_unload ()
@@ -102,18 +102,47 @@ gint	wbrk_get_next_brkpos (gunichar *string)
 		if (j < length && my_wcismydiac (string[j]))
 			continue;
 
-		//g_printf ("\tcheckpoint 2: %lc\n", string[j]);
+		g_printf ("\tcheckpoint 2: %lc\n", string[j]);
 		if (my_wcismyconsonant (string[j])) {
 			if (j+1 < length && string[j+1] == MYANMAR_SIGN_ASAT)
 				continue;
 
-			if ((j+1 < length && my_wcismydiac (string[j+1]) &&
-				 string[j+1] != MYANMAR_VOWEL_SIGN_AA) &&
-				(j+2 < length && string[j+2] == MYANMAR_SIGN_ASAT))
-				/* Followed by ASAT */
-				continue;
+			g_printf ("\tcheckpoint 3: %lc\n", string[j]);
+			i = j + 1;
+			/* gboolean FOLLOWED_BY_ASAT = FALSE; */
+			/* while (i < length && (string[i] == L'-' || my_wcismydiac (string[i]))) */
+			/* { */
+			/* 	if (string[i] == MYANMAR_VOWEL_SIGN_AA) */
+			/* 		break; */
 
-			//g_printf ("\tcheckpoint 3\n");
+			/* 	if (string[i+1] == MYANMAR_SIGN_ASAT) { */
+			/* 		FOLLOWED_BY_ASAT = TRUE; */
+			/* 		break; */
+			/* 	} */
+			/* 	i++; */
+            /* } */
+
+			/* if (FOLLOWED_BY_ASAT) */
+			/* 	continue; */
+
+			g_printf ("\tcheckpoint 4: %lc\n", string[j]);
+			/* i = 1; */
+			/* gboolean FOLLOWED_BY_ASAT = FALSE; */
+			/* while ((j+i < length && string[j+i] != MYANMAR_VOWEL_SIGN_AA && */
+			/* 		(string[j+i] == L'-' || my_wcismydiac (string[j+i])))) */
+			/* { */
+			/* 	if (j+i+1 < length && string[j+i+1] == MYANMAR_SIGN_ASAT) { */
+			/* 		/\* Followed by ASAT *\/ */
+			/* 		FOLLOWED_BY_ASAT = TRUE; */
+			/* 		break; */
+			/* 	} */
+			/* 	i++; */
+			/* } */
+
+			/* if (FOLLOWED_BY_ASAT) */
+			/* 	continue; */
+			
+			g_printf ("\tcheckpoint 4\n");
 			if ((j-1 > 0 && string[j-1] == MYANMAR_SIGN_VIRAMA) ||
 				(j+1 > length && string[j+1] == MYANMAR_SIGN_VIRAMA))
 				/*  Stacked Consonants Vs Kinzi */
