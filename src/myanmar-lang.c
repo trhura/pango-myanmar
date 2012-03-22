@@ -120,17 +120,24 @@ myanmar_engine_break (PangoEngineLang *engine,
 		}
 	}
 
-	if  (!wbrk_is_ready ())
+	if  (!wbrk_is_ready ()) {
+		g_warning ("Line break dictionary is not available.");
 		return;
+	}
 
 	int cword_start = 0;
 	int cword_end	= 0;
+
 	int position	= 0;
 	gunichar *nwcs =  wbrk_normalize_string (wcs);
 
 	//g_printf ("\t\t---%ls---\n", nwcs);
 	while (cword_end < wcslen (wcs)) {
-		//g_printf ("---%ls---\n", nwcs+cword_end);
+			//g_printf ("---%ls---\n", nwcs+cword_end);
+		while (g_unichar_isspace ((nwcs[cword_end])) ||
+			   g_unichar_ispunct ((nwcs[cword_end])))
+			cword_end++;
+		
 		position =  wbrk_get_next_brkpos (nwcs+cword_end, wcs+cword_end);
 
 		if (position == 0) {
@@ -141,9 +148,14 @@ myanmar_engine_break (PangoEngineLang *engine,
 		cword_end  += position;
 
 		attrs[cword_start].is_word_start = TRUE;
-		attrs[cword_end].is_word_start = TRUE;
 		attrs[cword_end].is_word_end = TRUE;
-
+		if (!g_unichar_ispunct (nwcs[cword_end+1]) &&
+			!g_unichar_isspace (nwcs[cword_end]) &&
+			!g_unichar_isspace (nwcs[cword_end+1]))
+		{
+			//g_printf ("\t\tsetting ...%ls\n", nwcs+cword_end);
+			attrs[cword_end].is_word_start = TRUE; 
+		}
 	}
 }
 

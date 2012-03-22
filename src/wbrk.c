@@ -36,7 +36,6 @@ void	wbrk_init ()
 {
 	if (trie == NULL)
 		trie = trie_new_from_file ("/home/trhura/Development/pango-myanmar/data/mybrk.tri");
-
 }
 
 void	wbrk_unload ()
@@ -110,6 +109,7 @@ gint	wbrk_get_next_brkpos (gunichar *nstring, gunichar *string)
 
 			if ((j-1 > 0 && nstring[j-1] == MYANMAR_SIGN_VIRAMA) ||
 				(j+1 > length && nstring[j+1] == MYANMAR_SIGN_VIRAMA))
+
 				/*  Stacked Consonants Vs Kinzi */
 				continue;
 
