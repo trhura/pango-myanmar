@@ -128,10 +128,10 @@ myanmar_engine_break (PangoEngineLang *engine,
 	int position	= 0;
 	gunichar *nwcs =  wbrk_normalize_string (wcs);
 
-	g_printf ("\t\t---%ls---\n", nwcs);
+	//g_printf ("\t\t---%ls---\n", nwcs);
 	while (cword_end < wcslen (wcs)) {
-		g_printf ("---%ls---\n", nwcs+cword_end);
-		position =  wbrk_get_next_brkpos (nwcs+cword_end);
+		//g_printf ("---%ls---\n", nwcs+cword_end);
+		position =  wbrk_get_next_brkpos (nwcs+cword_end, wcs+cword_end);
 
 		if (position == 0) {
 			break;

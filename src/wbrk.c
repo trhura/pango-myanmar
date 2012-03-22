@@ -29,12 +29,14 @@
 #include "myctype.h"
 #include "map.h"
 
-static Trie *trie;
+static Trie *trie; 
+static gint next_cluster_position (gunichar *string);
 
 void	wbrk_init ()
 {
 	if (trie == NULL)
 		trie = trie_new_from_file ("/home/trhura/Development/pango-myanmar/data/mybrk.tri");
+
 }
 
 void	wbrk_unload ()
@@ -73,7 +75,7 @@ gunichar*	wbrk_normalize_string (gunichar *string)
 	return ret;
 }
 
-gint	wbrk_get_next_brkpos (gunichar *string)
+gint	wbrk_get_next_brkpos (gunichar *nstring, gunichar *string)
 {
 	g_assert (trie != NULL);
 
@@ -81,7 +83,7 @@ gint	wbrk_get_next_brkpos (gunichar *string)
 	gint ret = 0;
 	TrieState *state = trie_root (trie);
 
-	int length = wcslen (string);
+	int length = wcslen (nstring);
 
 	if (length == 0)
 		return 0;
@@ -90,45 +92,143 @@ gint	wbrk_get_next_brkpos (gunichar *string)
 
 	while (j < length) {
 
-		if (string[j] != L'-' && !trie_state_walk (state, string[j]))
+		if (nstring[j] != L'-' && !trie_state_walk (state, nstring[j]))
 			break;
 
-		g_printf ("\tcheckpoint 1: %lc\n", string[j]);
+		//g_printf ("\tcheckpoint 1: %lc\n", nstring[j]);
 		j++;
+
 		if (!trie_state_is_terminal (state))
 			continue;
 
-		//g_printf ("\tcheckpoint 1: %lc\n", string[j-1]);
-		if (j < length && my_wcismydiac (string[j]))
+		//g_printf ("\tcheckpoint 2: %lc\n", nstring[j-1]);
+		if (j < length && my_wcismydiac (nstring[j]))
 			continue;
 
-		//g_printf ("\tcheckpoint 2: %lc\n", string[j]);
-		if (my_wcismyconsonant (string[j])) {
-			if (j+1 < length && string[j+1] == MYANMAR_SIGN_ASAT)
-				continue;
+		//g_printf ("\tcheckpoint 3: %lc\n", nstring[j]);
+		if (my_wcismyconsonant (nstring[j])) {
 
-			if ((j+1 < length && my_wcismydiac (string[j+1]) &&
-				 string[j+1] != MYANMAR_VOWEL_SIGN_AA) &&
-				(j+2 < length && string[j+2] == MYANMAR_SIGN_ASAT))
-				/* Followed by ASAT */
-				continue;
-
-			//g_printf ("\tcheckpoint 3\n");
-			if ((j-1 > 0 && string[j-1] == MYANMAR_SIGN_VIRAMA) ||
-				(j+1 > length && string[j+1] == MYANMAR_SIGN_VIRAMA))
+			if ((j-1 > 0 && nstring[j-1] == MYANMAR_SIGN_VIRAMA) ||
+				(j+1 > length && nstring[j+1] == MYANMAR_SIGN_VIRAMA))
 				/*  Stacked Consonants Vs Kinzi */
 				continue;
+
+			int i = 1;
+			while (j + i < length) {
+				/* Check whether followed by ASAT or not */
+				//g_printf ("\tcheckpoint 4: %lc\n", nstring[j+i]);
+				if (nstring[j+i-1] != MYANMAR_VOWEL_SIGN_AA &&
+					nstring[j+i] == MYANMAR_SIGN_ASAT)
+					goto contin;
+
+				if (my_wcismydiac (nstring[j+i]) || nstring[j+i] == L'-') {
+					i++;
+					continue;
+				}
+
+				break;
+			}
+			/* Otherwise */
+			ret = j;
+
+		contin:
+			continue;
 		}
-		/* Otherwise */
-		ret = j; 
 	}
 
-	if (ret == 0) {
-		while (j < length &&
-			   (!my_wcismyconsonant(string[j])))
-			j++;
-		ret = j;
-	}
+	if (ret ==  0)
+		ret = next_cluster_position (string);
 
 	return ret;
+}
+
+static gint next_cluster_position (gunichar *string)
+{
+	if (string == NULL)
+		/* if the string is empty. */
+		goto notfound;
+
+	int i = 0, j = 0;
+	int length = wcslen (string);
+
+	if (length == 0)
+		goto notfound;
+
+	if (!my_wcismyanmar  (string[i]))
+	{
+		while (!my_wcismyanmar (string[j]) && j <length)
+			j++;
+		goto finish;
+	}
+
+	if (!my_wcismyletter (string[i]) && i < length) {
+		/* Find the first consonant */
+		if (my_wcismydigit(string[i]) ||
+			my_wcismypunct(string[i]) ||
+			my_wcismyindependsymbol (string[i])) {
+			j = i + 1;
+			goto finish;
+		}
+
+		while (!my_wcismyletter (string[j]) && j <length)
+			j++;
+
+		goto finish;
+	}
+
+	j = i + 1;
+	int devowelized;
+
+	do {
+		devowelized = 0;
+
+		while (!my_wcismyletter (string[j]) && j < length) {
+			/* find the next consonant */
+			if (!my_wcismyanmar (string[j]) ||
+				my_wcismydigit(string[j]) ||
+				my_wcismypunct(string[j]) ||
+				my_wcismyindependsymbol (string[j])) {
+				goto finish;
+			}
+			j++;
+		}
+
+		if (j == length)
+			goto finish;
+
+		if (string[j-1] == MYANMAR_SIGN_VIRAMA) {
+			/* preceded by virama */
+			j += 1;
+			devowelized = 1;
+		}
+
+		if ((j+1 < length) && string[j+1] == MYANMAR_SIGN_VIRAMA ) {
+			/* followed by virama */
+			j += 3;
+			devowelized = 1;
+
+		}
+
+		/* Checks whether the consonant is followed by asat */
+		int k = j;
+		while (k + 1 < length && my_wcismydiac (string[k+1])) {
+			if (string[k + 1] == MYANMAR_VOWEL_SIGN_AA)
+				break;
+
+			if (string[k + 1] == MYANMAR_SIGN_ASAT) {
+				devowelized = 1;
+				j = k + 1;
+				break;
+			}
+			k++;
+		}
+
+	} while (devowelized != 0);
+
+ finish:
+	return j-i;
+
+ notfound:
+	g_warn_if_reached ();
+	return -1;
 }

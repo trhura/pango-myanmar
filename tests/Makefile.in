@@ -14,7 +14,6 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -34,7 +33,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = src
+TESTS = test_mybrk$(EXEEXT)
+check_PROGRAMS = test_mybrk$(EXEEXT)
+subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
@@ -43,48 +44,13 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
-am__install_max = 40
-am__nobase_strip_setup = \
-  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
-am__nobase_strip = \
-  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
-am__nobase_list = $(am__nobase_strip_setup); \
-  for p in $$list; do echo "$$p $$p"; done | \
-  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
-  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
-    if (++n[$$2] == $(am__install_max)) \
-      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
-    END { for (dir in files) print dir, files[dir] }'
-am__base_list = \
-  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
-  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(moduledir)"
-LTLIBRARIES = $(module_LTLIBRARIES)
+am_test_mybrk_OBJECTS = test_mybrk.$(OBJEXT) myctype.$(OBJEXT) \
+	wbrk.$(OBJEXT)
+test_mybrk_OBJECTS = $(am_test_mybrk_OBJECTS)
 am__DEPENDENCIES_1 =
-am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_2)
-pango_myanmar_fc_la_DEPENDENCIES = $(am__DEPENDENCIES_3)
-am__objects_1 = myanmar-fc.lo
-am_pango_myanmar_fc_la_OBJECTS = $(am__objects_1)
-pango_myanmar_fc_la_OBJECTS = $(am_pango_myanmar_fc_la_OBJECTS)
-pango_myanmar_fc_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(pango_myanmar_fc_la_LDFLAGS) $(LDFLAGS) -o $@
-@HAVE_FREETYPE_TRUE@am_pango_myanmar_fc_la_rpath = -rpath $(moduledir)
-pango_myanmar_lang_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am__objects_2 = myctype.lo wbrk.lo myanmar-lang.lo
-am_pango_myanmar_lang_la_OBJECTS = $(am__objects_2)
-pango_myanmar_lang_la_OBJECTS = $(am_pango_myanmar_lang_la_OBJECTS)
-pango_myanmar_lang_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(pango_myanmar_lang_la_LDFLAGS) $(LDFLAGS) -o $@
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+test_mybrk_DEPENDENCIES = $(am__DEPENDENCIES_2)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -98,12 +64,12 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(pango_myanmar_fc_la_SOURCES) \
-	$(pango_myanmar_lang_la_SOURCES)
-DIST_SOURCES = $(pango_myanmar_fc_la_SOURCES) \
-	$(pango_myanmar_lang_la_SOURCES)
+SOURCES = $(test_mybrk_SOURCES)
+DIST_SOURCES = $(test_mybrk_SOURCES)
 ETAGS = etags
 CTAGS = ctags
+am__tty_colors = \
+red=; grn=; lgn=; blu=; std=
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -245,39 +211,28 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-myanmar_fc_sources = myanmar-fc.c 
-myanmar_lang_sources = myanmar.h \
-			myctype.h \
-			myctype.c \
-			wbrk.h	  \
-			wbrk.c	  \
-			map.h	\
-		    	myanmar-lang.c 
-
-pangolibs = $(PANGO_LIBS) $(DATRIE_LIBS)
-pangoft2libs = $(PANGOFT2_LIBS) $(FREETYPE_LIBS) $(pangolibs)
-moddefine = $(FT2_PREFIX)
-moduledir = $(libdir)/pango/$(PANGO_MODULE_VERSION)/modules
-@HAVE_FREETYPE_TRUE@PANGO_FC_INCLUDES = $(FREETYPE_CFLAGS)
-@HAVE_FREETYPE_TRUE@PANGO_FC_MODULES = pango-myanmar-fc.la
+MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = \
-	-std=c99	    \
+	-I$(top_builddir)/src/	\
+	-std=c99		\
 	-DPANGO_ENABLE_ENGINE	\
 	-DPANGO_ENABLE_BACKEND  \
 	-DG_DISABLE_DEPRECATED	\
 	$(PANGO_CFLAGS)		\
 	$(DATRIE_CFLAGS)	\
-	$(moddefine)		\
-	$(GLIB_CFLAGS)		\
-	$(FREETYPE_CFLAGS)
+	$(GLIB_CFLAGS)
 
-module_LTLIBRARIES = $(PANGO_FC_MODULES) pango-myanmar-lang.la
-pango_myanmar_fc_la_LDFLAGS = -export-dynamic -avoid-version -module
-pango_myanmar_fc_la_LIBADD = $(pangoft2libs)
-pango_myanmar_fc_la_SOURCES = $(myanmar_fc_sources)
-pango_myanmar_lang_la_LDFLAGS = -export-dynamic -avoid-version -module
-pango_myanmar_lang_la_LIBADD = $(pangolibs)
-pango_myanmar_lang_la_SOURCES = $(myanmar_lang_sources)
+pangolibs = $(PANGO_LIBS) $(DATRIE_LIBS) $(GLIB_LIBS)
+#EXTRA_DIST = sorttest.txt sorted.txt test-thcoll.sh test-thbrk.sh test-thwbrk.sh
+TESTS_ENVIRONMENT = top_builddir=$(top_builddir)
+test_mybrk_SOURCES = \
+	test_mybrk.c \
+	$(top_builddir)/src/myctype.h \
+	$(top_builddir)/src/myctype.c \
+	$(top_builddir)/src/wbrk.h \
+	$(top_builddir)/src/wbrk.c
+
+test_mybrk_LDADD = $(pangolibs)
 all: all-am
 
 .SUFFIXES:
@@ -291,9 +246,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu tests/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/Makefile
+	  $(AUTOMAKE) --gnu tests/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -312,41 +267,18 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-install-moduleLTLIBRARIES: $(module_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	test -z "$(moduledir)" || $(MKDIR_P) "$(DESTDIR)$(moduledir)"
-	@list='$(module_LTLIBRARIES)'; test -n "$(moduledir)" || list=; \
-	list2=; for p in $$list; do \
-	  if test -f $$p; then \
-	    list2="$$list2 $$p"; \
-	  else :; fi; \
-	done; \
-	test -z "$$list2" || { \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(moduledir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(moduledir)"; \
-	}
 
-uninstall-moduleLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(module_LTLIBRARIES)'; test -n "$(moduledir)" || list=; \
-	for p in $$list; do \
-	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(moduledir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(moduledir)/$$f"; \
-	done
-
-clean-moduleLTLIBRARIES:
-	-test -z "$(module_LTLIBRARIES)" || rm -f $(module_LTLIBRARIES)
-	@list='$(module_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-pango-myanmar-fc.la: $(pango_myanmar_fc_la_OBJECTS) $(pango_myanmar_fc_la_DEPENDENCIES) 
-	$(pango_myanmar_fc_la_LINK) $(am_pango_myanmar_fc_la_rpath) $(pango_myanmar_fc_la_OBJECTS) $(pango_myanmar_fc_la_LIBADD) $(LIBS)
-pango-myanmar-lang.la: $(pango_myanmar_lang_la_OBJECTS) $(pango_myanmar_lang_la_DEPENDENCIES) 
-	$(pango_myanmar_lang_la_LINK) -rpath $(moduledir) $(pango_myanmar_lang_la_OBJECTS) $(pango_myanmar_lang_la_LIBADD) $(LIBS)
+clean-checkPROGRAMS:
+	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
+test_mybrk$(EXEEXT): $(test_mybrk_OBJECTS) $(test_mybrk_DEPENDENCIES) 
+	@rm -f test_mybrk$(EXEEXT)
+	$(LINK) $(test_mybrk_OBJECTS) $(test_mybrk_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -354,10 +286,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myanmar-fc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myanmar-lang.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myctype.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wbrk.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myctype.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mybrk.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wbrk.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -379,6 +310,34 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+myctype.o: $(top_builddir)/src/myctype.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT myctype.o -MD -MP -MF $(DEPDIR)/myctype.Tpo -c -o myctype.o `test -f '$(top_builddir)/src/myctype.c' || echo '$(srcdir)/'`$(top_builddir)/src/myctype.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/myctype.Tpo $(DEPDIR)/myctype.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(top_builddir)/src/myctype.c' object='myctype.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o myctype.o `test -f '$(top_builddir)/src/myctype.c' || echo '$(srcdir)/'`$(top_builddir)/src/myctype.c
+
+myctype.obj: $(top_builddir)/src/myctype.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT myctype.obj -MD -MP -MF $(DEPDIR)/myctype.Tpo -c -o myctype.obj `if test -f '$(top_builddir)/src/myctype.c'; then $(CYGPATH_W) '$(top_builddir)/src/myctype.c'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/src/myctype.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/myctype.Tpo $(DEPDIR)/myctype.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(top_builddir)/src/myctype.c' object='myctype.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o myctype.obj `if test -f '$(top_builddir)/src/myctype.c'; then $(CYGPATH_W) '$(top_builddir)/src/myctype.c'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/src/myctype.c'; fi`
+
+wbrk.o: $(top_builddir)/src/wbrk.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wbrk.o -MD -MP -MF $(DEPDIR)/wbrk.Tpo -c -o wbrk.o `test -f '$(top_builddir)/src/wbrk.c' || echo '$(srcdir)/'`$(top_builddir)/src/wbrk.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/wbrk.Tpo $(DEPDIR)/wbrk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(top_builddir)/src/wbrk.c' object='wbrk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wbrk.o `test -f '$(top_builddir)/src/wbrk.c' || echo '$(srcdir)/'`$(top_builddir)/src/wbrk.c
+
+wbrk.obj: $(top_builddir)/src/wbrk.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wbrk.obj -MD -MP -MF $(DEPDIR)/wbrk.Tpo -c -o wbrk.obj `if test -f '$(top_builddir)/src/wbrk.c'; then $(CYGPATH_W) '$(top_builddir)/src/wbrk.c'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/src/wbrk.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/wbrk.Tpo $(DEPDIR)/wbrk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(top_builddir)/src/wbrk.c' object='wbrk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wbrk.obj `if test -f '$(top_builddir)/src/wbrk.c'; then $(CYGPATH_W) '$(top_builddir)/src/wbrk.c'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/src/wbrk.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -438,6 +397,98 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
+check-TESTS: $(TESTS)
+	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
+	srcdir=$(srcdir); export srcdir; \
+	list=' $(TESTS) '; \
+	$(am__tty_colors); \
+	if test -n "$$list"; then \
+	  for tst in $$list; do \
+	    if test -f ./$$tst; then dir=./; \
+	    elif test -f $$tst; then dir=; \
+	    else dir="$(srcdir)/"; fi; \
+	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *[\ \	]$$tst[\ \	]*) \
+		xpass=`expr $$xpass + 1`; \
+		failed=`expr $$failed + 1`; \
+		col=$$red; res=XPASS; \
+	      ;; \
+	      *) \
+		col=$$grn; res=PASS; \
+	      ;; \
+	      esac; \
+	    elif test $$? -ne 77; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *[\ \	]$$tst[\ \	]*) \
+		xfail=`expr $$xfail + 1`; \
+		col=$$lgn; res=XFAIL; \
+	      ;; \
+	      *) \
+		failed=`expr $$failed + 1`; \
+		col=$$red; res=FAIL; \
+	      ;; \
+	      esac; \
+	    else \
+	      skip=`expr $$skip + 1`; \
+	      col=$$blu; res=SKIP; \
+	    fi; \
+	    echo "$${col}$$res$${std}: $$tst"; \
+	  done; \
+	  if test "$$all" -eq 1; then \
+	    tests="test"; \
+	    All=""; \
+	  else \
+	    tests="tests"; \
+	    All="All "; \
+	  fi; \
+	  if test "$$failed" -eq 0; then \
+	    if test "$$xfail" -eq 0; then \
+	      banner="$$All$$all $$tests passed"; \
+	    else \
+	      if test "$$xfail" -eq 1; then failures=failure; else failures=failures; fi; \
+	      banner="$$All$$all $$tests behaved as expected ($$xfail expected $$failures)"; \
+	    fi; \
+	  else \
+	    if test "$$xpass" -eq 0; then \
+	      banner="$$failed of $$all $$tests failed"; \
+	    else \
+	      if test "$$xpass" -eq 1; then passes=pass; else passes=passes; fi; \
+	      banner="$$failed of $$all $$tests did not behave as expected ($$xpass unexpected $$passes)"; \
+	    fi; \
+	  fi; \
+	  dashes="$$banner"; \
+	  skipped=""; \
+	  if test "$$skip" -ne 0; then \
+	    if test "$$skip" -eq 1; then \
+	      skipped="($$skip test was not run)"; \
+	    else \
+	      skipped="($$skip tests were not run)"; \
+	    fi; \
+	    test `echo "$$skipped" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$skipped"; \
+	  fi; \
+	  report=""; \
+	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
+	    report="Please report to $(PACKAGE_BUGREPORT)"; \
+	    test `echo "$$report" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$report"; \
+	  fi; \
+	  dashes=`echo "$$dashes" | sed s/./=/g`; \
+	  if test "$$failed" -eq 0; then \
+	    echo "$$grn$$dashes"; \
+	  else \
+	    echo "$$red$$dashes"; \
+	  fi; \
+	  echo "$$banner"; \
+	  test -z "$$skipped" || echo "$$skipped"; \
+	  test -z "$$report" || echo "$$report"; \
+	  echo "$$dashes$$std"; \
+	  test "$$failed" -eq 0; \
+	else :; fi
+
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
@@ -469,12 +520,11 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile
 installdirs:
-	for dir in "$(DESTDIR)$(moduledir)"; do \
-	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
-	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -500,9 +550,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-moduleLTLIBRARIES \
+clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -523,7 +574,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-moduleLTLIBRARIES
+install-data-am:
 
 install-dvi: install-dvi-am
 
@@ -569,28 +620,24 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-moduleLTLIBRARIES
+uninstall-am:
 
-.MAKE: install-am install-strip
+.MAKE: check-am install-am install-strip
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-moduleLTLIBRARIES ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-moduleLTLIBRARIES install-pdf install-pdf-am \
+.PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
+	clean-checkPROGRAMS clean-generic clean-libtool ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-moduleLTLIBRARIES
+	tags uninstall uninstall-am
 
-
-included-modules: $(noinst_LTLIBRARIES)
-
-.PHONY: included-modules 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

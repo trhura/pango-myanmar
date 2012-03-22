@@ -209,6 +209,11 @@ AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
 AC_SUBST(PANGOFT2_LIBS)
 
+GLIB_CFLAGS=`$PKG_CONFIG --cflags glib-2.0`
+GLIB_LIBS=`$PKG_CONFIG --libs glib-2.0`
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
+
 DATRIE_CFLAGS=`$PKG_CONFIG --cflags datrie-0.2`
 DATRIE_LIBS=`$PKG_CONFIG --libs datrie-0.2`
 AC_SUBST(DATRIE_CFLAGS)
@@ -220,5 +225,6 @@ ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 AC_OUTPUT(
   Makefile
   data/Makefile
-  src/Makefile 
+  src/Makefile
+  tests/Makefile
 )

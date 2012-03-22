@@ -1,4 +1,4 @@
-SUBDIRS = data src
+SUBDIRS = data src tests
 
 MAINTAINERCLEANFILES = Makefile.in
 

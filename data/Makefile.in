@@ -103,6 +103,8 @@ FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FREETYPE_LIBS = @FREETYPE_LIBS@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_LIBS = @GLIB_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -214,7 +216,8 @@ dictdatadir = $(datadir)/libburmese
 @ENABLE_DICT_TRUE@dictdata_DATA = mybrk.tri
 mydict_SRC = \
 	$(srcdir)/mydict-common-words.txt \
-	$(srcdir)/mydict-syllables.txt	
+	$(srcdir)/mydict-mmnlp-words.txt \
+	$(srcdir)/mydict-syllables.txt
 
 EXTRA_DIST = mybrk.abm $(mydict_SRC)
 all: all-am

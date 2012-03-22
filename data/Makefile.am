@@ -11,7 +11,8 @@ endif
 
 mydict_SRC = \
 	$(srcdir)/mydict-common-words.txt \
-	$(srcdir)/mydict-syllables.txt	
+	$(srcdir)/mydict-mmnlp-words.txt \
+	$(srcdir)/mydict-syllables.txt
 
 EXTRA_DIST = mybrk.abm $(mydict_SRC)
 

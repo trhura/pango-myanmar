@@ -23,7 +23,7 @@
 
 void	wbrk_init ();
 void	wbrk_unload ();
-gint	wbrk_get_next_brkpos (gunichar *string);
+gint	wbrk_get_next_brkpos (gunichar *nstring,gunichar *string);
 gunichar*	wbrk_normalize_string (gunichar *string);
 gboolean	wbrk_is_ready ();
 

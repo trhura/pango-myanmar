@@ -44,4 +44,4 @@ pango_myanmar_lang_la_SOURCES = $(myanmar_lang_sources)
 
 included-modules: $(noinst_LTLIBRARIES)
 
-.PHONY: included-modules
+.PHONY: included-modules 
