@@ -60,6 +60,56 @@ myanmar_engine_break (PangoEngineLang *engine,
 					  int			   attrs_len)
 {
 
+	gint i, j;
+	glong n_chars;
+	gunichar *wcs = g_utf8_to_ucs4_fast (text, length, &n_chars);
+
+	/* Determine Character Boundar */
+	for (i = 0; i < n_chars; i++)
+	{
+		attrs[i].is_char_break = FALSE;
+		//attrs[i].is_line_break = TRUE;
+		attrs[i].is_cursor_position = FALSE;
+
+		if (g_unichar_type (wcs[i]) == G_UNICODE_OTHER_LETTER ||
+			wcs[i] == MYANMAR_SYMBOL_AFOREMENTIONED)
+		{
+			attrs[i].is_char_break = TRUE;
+			attrs[i].is_line_break = TRUE;
+			attrs[i].is_cursor_position = TRUE;
+
+			// (C|CKC|CA|CAKC) skip kinzi & final consonants
+			while (i + 1 < n_chars &&
+				   (wcs[i+1] == MYANMAR_SIGN_ASAT ||
+					wcs[i+1] == MYANMAR_SIGN_VIRAMA))
+			{
+				i++;
+
+				if (i + 1 < n_chars &&
+					g_unichar_type (wcs[i+1]) == G_UNICODE_OTHER_LETTER)
+					i++;
+			}
+
+			//[M][V] Medials/Vowels
+			while (i + 1 < n_chars &&
+				   g_unichar_type (wcs[i+1]) == G_UNICODE_NON_SPACING_MARK)
+				i++;
+
+			//[F<CA>] Finals
+			if (i + 1 < n_chars &&
+				g_unichar_type  (wcs[i+1]) == G_UNICODE_OTHER_LETTER)
+			{
+				if (i + 2 < n_chars &&
+					wcs[i+2] == MYANMAR_SIGN_ASAT)
+					i += 2;
+			}
+
+			//[D] Tones
+			while (i + 1 < n_chars &&
+				   g_unichar_type (wcs[i+1]) == G_UNICODE_NON_SPACING_MARK)
+				i++;
+		}
+	}
 }
 
 static void
@@ -75,13 +125,13 @@ void
 PANGO_MODULE_ENTRY(init) (GTypeModule *module)
 {
 	myanmar_engine_lang_register_type (module);
-	wbrk_init ();
+	//wbrk_init ();
 }
 
 void
 PANGO_MODULE_ENTRY(exit) (void)
 {
-	wbrk_unload ();
+	//wbrk_unload ();
 }
 
 void
