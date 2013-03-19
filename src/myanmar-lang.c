@@ -30,7 +30,6 @@
 #include <pango/pango-break.h>
 
 #include "myanmar.h"
-#include "wbrk.h"
 
 /* No extra fields needed */
 typedef PangoEngineLang		 MyanmarEngineLang;
@@ -61,102 +60,6 @@ myanmar_engine_break (PangoEngineLang *engine,
 					  int			   attrs_len)
 {
 
-	gint i, j;
-	glong n_chars;
-	gunichar *wcs = g_utf8_to_ucs4_fast (text, length, &n_chars);
-
-	/* Determine Character Boundar */
-	for (i = 0; i < n_chars; i++)
-	{
-		GUnicodeType type = g_unichar_type (wcs[i]);
-
-		if (type	== G_UNICODE_OTHER_LETTER ||
-			wcs[i]	== MYANMAR_SYMBOL_AFOREMENTIONED) {
-			/* All letters (consonants) are character,line breaks.
-			 */
-			attrs[i].is_char_break = TRUE;
-			attrs[i].is_line_break = TRUE;
-			attrs[i].is_cursor_position = TRUE;
-
-			gint next = 1;
-			while ((i+next) < n_chars && /* Skip marks (medials, vowel) */
-				   g_unichar_type (wcs[i+next]) == G_UNICODE_NON_SPACING_MARK)
-			{
-				if (wcs[i+next] == MYANMAR_SIGN_ASAT)
-				{
-					/* If it is followed ASAT, don't break . */
-					attrs[i].is_line_break = FALSE;
-					attrs[i].is_char_break = FALSE;
-					attrs[i].is_cursor_position = FALSE;
-
-					/* Howver, if it is infront of kinzi (followed by virama),
-					 * cursor position break should be allowed .
-					 */
-					if ((i+next+1) < n_chars &&
-						wcs[i+next+1] == MYANMAR_SIGN_VIRAMA)
-						attrs[i].is_cursor_position = TRUE;
-					break;
-				}
-
-				if (wcs[i+next] == MYANMAR_SIGN_VIRAMA) {
-					attrs[i].is_char_break = FALSE;
-					attrs[i].is_line_break = FALSE;
-				}
-				next++;
-
-			}
-
-			if (wcs[i] == MYANMAR_LETTER_GREAT_SA) {
-				attrs[i].is_char_break = FALSE;
-				attrs[i].is_line_break = FALSE;
-			}
-
-			/* For stacked consonants & (after) kinzi, doesn't allow break */
-			if (i > 0 && wcs[i-1] == MYANMAR_SIGN_VIRAMA) {
-				attrs[i].is_line_break = FALSE;
-				attrs[i].is_char_break = FALSE;
-				attrs[i].is_cursor_position = FALSE;
-			}
-		}
-	}
-
-	if  (!wbrk_is_ready ()) {
-		g_warning ("Line break dictionary is not available.");
-		return;
-	}
-
-	int cword_start = 0;
-	int cword_end	= 0;
-
-	int position	= 0;
-	gunichar *nwcs =  wbrk_normalize_string (wcs);
-
-	//g_printf ("\t\t---%ls---\n", nwcs);
-	while (cword_end < wcslen (wcs)) {
-			//g_printf ("---%ls---\n", nwcs+cword_end);
-		while (g_unichar_isspace ((nwcs[cword_end])) ||
-			   g_unichar_ispunct ((nwcs[cword_end])))
-			cword_end++;
-		
-		position =  wbrk_get_next_brkpos (nwcs+cword_end, wcs+cword_end);
-
-		if (position == 0) {
-			break;
-		}
-
-		cword_start = cword_end;
-		cword_end  += position;
-
-		attrs[cword_start].is_word_start = TRUE;
-		attrs[cword_end].is_word_end = TRUE;
-		if (!g_unichar_ispunct (nwcs[cword_end+1]) &&
-			!g_unichar_isspace (nwcs[cword_end]) &&
-			!g_unichar_isspace (nwcs[cword_end+1]))
-		{
-			//g_printf ("\t\tsetting ...%ls\n", nwcs+cword_end);
-			attrs[cword_end].is_word_start = TRUE; 
-		}
-	}
 }
 
 static void
