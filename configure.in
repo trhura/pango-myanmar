@@ -57,7 +57,7 @@ dnl dictionary data generation
 AC_ARG_ENABLE(dict,
               [AC_HELP_STRING([--disable-dict],
                               [disable dictionary data generation])],
-              , enable_dict="yes")
+              , enable_dict="no")
 
 if test "x$enable_dict" = "xyes"; then
   AC_CHECK_PROGS(TRIETOOL,trietool-0.2,no)

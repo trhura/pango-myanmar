@@ -5,10 +5,7 @@ myanmar_fc_sources = myanmar-fc.c
 myanmar_lang_sources =	myanmar.h \
 			myctype.h \
 			myctype.c \
-			wbrk.h	  \
-			wbrk.c	  \
-			map.h	\
-		    	myanmar-lang.c 
+		    	myanmar-lang.c
 
 pangolibs = $(PANGO_LIBS) $(DATRIE_LIBS)
 pangoft2libs = $(PANGOFT2_LIBS) $(FREETYPE_LIBS) $(pangolibs)
