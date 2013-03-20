@@ -76,22 +76,24 @@ myanmar_engine_break (PangoEngineLang *engine,
 	{
 		/* Skip Non-Consonants */
 		if (g_unichar_type (wcs[i]) != G_UNICODE_OTHER_LETTER &&
-			  wcs[i] != MYANMAR_SYMBOL_AFOREMENTIONED)
+			wcs[i] != MYANMAR_SYMBOL_AFOREMENTIONED)
 		{
-				i++;
-				continue;
-
+			i++;
+			continue;
 		}
 
 		//[F<CA>] Finals
 		//  Make sure CA is not followed by K
 		if (i + 1 < n_chars &&
-			wcs[i+1] == MYANMAR_SIGN_ASAT &&
-			i + 2 < n_chars &&
-			wcs[i+2] != MYANMAR_SIGN_VIRAMA)
+			wcs[i+1] == MYANMAR_SIGN_ASAT)
 		{
-			i++;
-			continue;
+			/* CONTRACTIONS */
+			if (i + 2 < n_chars && wcs[i+2] != MYANMAR_SIGN_VIRAMA &&
+				!my_wcismyvowel(wcs[i+2]) && !my_wcismymedial(wcs[i+2]))
+			{
+				i++;
+				continue;
+			}
 		}
 
 		attrs[i].is_char_break = attrs[i].is_cursor_position = TRUE;
@@ -126,41 +128,41 @@ myanmar_engine_break (PangoEngineLang *engine,
 	}
 }
 
-static void
-myanmar_engine_lang_class_init (PangoEngineLangClass *class)
-{
-	class->script_break = myanmar_engine_break;
-}
+	static void
+		myanmar_engine_lang_class_init (PangoEngineLangClass *class)
+	{
+		class->script_break = myanmar_engine_break;
+	}
 
-PANGO_ENGINE_LANG_DEFINE_TYPE (MyanmarEngineLang, myanmar_engine_lang,
-							   myanmar_engine_lang_class_init, NULL);
+	PANGO_ENGINE_LANG_DEFINE_TYPE (MyanmarEngineLang, myanmar_engine_lang,
+								   myanmar_engine_lang_class_init, NULL);
 
-void
-PANGO_MODULE_ENTRY(init) (GTypeModule *module)
-{
-	myanmar_engine_lang_register_type (module);
-	//wbrk_init ();
-}
+	void
+		PANGO_MODULE_ENTRY(init) (GTypeModule *module)
+	{
+		myanmar_engine_lang_register_type (module);
+		//wbrk_init ();
+	}
 
-void
-PANGO_MODULE_ENTRY(exit) (void)
-{
-	//wbrk_unload ();
-}
+	void
+		PANGO_MODULE_ENTRY(exit) (void)
+	{
+		//wbrk_unload ();
+	}
 
-void
-PANGO_MODULE_ENTRY(list) (PangoEngineInfo **engines, gint *n_engines)
-{
-	*engines = script_engines;
-	*n_engines = G_N_ELEMENTS (script_engines);
-}
+	void
+		PANGO_MODULE_ENTRY(list) (PangoEngineInfo **engines, gint *n_engines)
+	{
+		*engines = script_engines;
+		*n_engines = G_N_ELEMENTS (script_engines);
+	}
 
-/* Load a particular engine given the ID for the engine */
-PangoEngine *
-PANGO_MODULE_ENTRY(create) (const char *id)
-{
-	if (!strcmp (id, SCRIPT_ENGINE_NAME))
-		return g_object_new (myanmar_engine_lang_type, NULL);
-	else
-		return NULL;
-}
+	/* Load a particular engine given the ID for the engine */
+	PangoEngine *
+		PANGO_MODULE_ENTRY(create) (const char *id)
+	{
+		if (!strcmp (id, SCRIPT_ENGINE_NAME))
+			return g_object_new (myanmar_engine_lang_type, NULL);
+		else
+			return NULL;
+	}
