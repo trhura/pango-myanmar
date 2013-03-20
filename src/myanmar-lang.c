@@ -28,8 +28,10 @@
 #include <string.h>
 #include <pango/pango-engine.h>
 #include <pango/pango-break.h>
+#include <stdio.h>
 
 #include "myanmar.h"
+#include "myctype.h"
 
 /* No extra fields needed */
 typedef PangoEngineLang		 MyanmarEngineLang;
@@ -64,51 +66,63 @@ myanmar_engine_break (PangoEngineLang *engine,
 	glong n_chars;
 	gunichar *wcs = g_utf8_to_ucs4_fast (text, length, &n_chars);
 
+	for (i = 0; i < n_chars; i++) {
+		if (my_wcismyanmar (wcs[i]))
+			attrs[i].is_char_break = attrs[i].is_cursor_position = FALSE;
+	}
+
 	/* Determine Character Boundar */
-	for (i = 0; i < n_chars; i++)
+	for (i = 0; i < n_chars; )
 	{
-		attrs[i].is_char_break = FALSE;
-		//attrs[i].is_line_break = TRUE;
-		attrs[i].is_cursor_position = FALSE;
-
-		if (g_unichar_type (wcs[i]) == G_UNICODE_OTHER_LETTER ||
-			wcs[i] == MYANMAR_SYMBOL_AFOREMENTIONED)
+		/* Skip Non-Consonants */
+		if (g_unichar_type (wcs[i]) != G_UNICODE_OTHER_LETTER &&
+			  wcs[i] != MYANMAR_SYMBOL_AFOREMENTIONED)
 		{
-			attrs[i].is_char_break = TRUE;
-			attrs[i].is_line_break = TRUE;
-			attrs[i].is_cursor_position = TRUE;
-
-			// (C|CKC|CA|CAKC) skip kinzi & final consonants
-			while (i + 1 < n_chars &&
-				   (wcs[i+1] == MYANMAR_SIGN_ASAT ||
-					wcs[i+1] == MYANMAR_SIGN_VIRAMA))
-			{
 				i++;
+				continue;
 
-				if (i + 1 < n_chars &&
-					g_unichar_type (wcs[i+1]) == G_UNICODE_OTHER_LETTER)
-					i++;
-			}
+		}
 
-			//[M][V] Medials/Vowels
-			while (i + 1 < n_chars &&
-				   g_unichar_type (wcs[i+1]) == G_UNICODE_NON_SPACING_MARK)
-				i++;
+		//[F<CA>] Finals
+		//  Make sure CA is not followed by K
+		if (i + 1 < n_chars &&
+			wcs[i+1] == MYANMAR_SIGN_ASAT &&
+			i + 2 < n_chars &&
+			wcs[i+2] != MYANMAR_SIGN_VIRAMA)
+		{
+			i++;
+			continue;
+		}
 
-			//[F<CA>] Finals
-			if (i + 1 < n_chars &&
-				g_unichar_type  (wcs[i+1]) == G_UNICODE_OTHER_LETTER)
-			{
-				if (i + 2 < n_chars &&
-					wcs[i+2] == MYANMAR_SIGN_ASAT)
-					i += 2;
-			}
+		attrs[i].is_char_break = attrs[i].is_cursor_position = TRUE;
+		i++;
 
-			//[D] Tones
-			while (i + 1 < n_chars &&
-				   g_unichar_type (wcs[i+1]) == G_UNICODE_NON_SPACING_MARK)
+		// (C|CKC|CA|CAKC) skip kinzi & final consonants
+		while (i < n_chars &&
+			   (wcs[i] == MYANMAR_SIGN_ASAT))
+		{
+			i++;
+		}
+
+		// CKC
+		while (i < n_chars &&
+			   wcs[i] == MYANMAR_SIGN_VIRAMA)
+		{
+			i++;
+			if (i < n_chars &&
+				g_unichar_type (wcs[i]) == G_UNICODE_OTHER_LETTER)
 				i++;
 		}
+
+		//[M][V] Medials/Vowels
+		while (i < n_chars &&
+			   g_unichar_type (wcs[i]) == G_UNICODE_NON_SPACING_MARK)
+			i++;
+
+		//[D] Tones
+		while (i < n_chars &&
+			   g_unichar_type (wcs[i]) == G_UNICODE_NON_SPACING_MARK)
+			i++;
 	}
 }
 
