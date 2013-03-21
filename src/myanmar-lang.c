@@ -66,14 +66,21 @@ myanmar_engine_break (PangoEngineLang *engine,
 	glong n_chars;
 	gunichar *wcs = g_utf8_to_ucs4_fast (text, length, &n_chars);
 
-	for (i = 0; i < n_chars; i++) {
-		if (my_wcismyanmar (wcs[i]))
+	for (i = 0; i < n_chars; i++)
+	{
+		if (my_wcismyconsonant (wcs[i]))
 			attrs[i].is_char_break = attrs[i].is_cursor_position = FALSE;
 	}
 
 	/* Determine Character Boundar */
 	for (i = 0; i < n_chars; )
 	{
+		/* Skip Non-Myanmar Characters */
+		if (!my_wcismyanmar (wcs[i])) {
+			i++;
+			continue;
+		}
+
 		/* Skip Non-Consonants */
 		if (g_unichar_type (wcs[i]) != G_UNICODE_OTHER_LETTER &&
 			wcs[i] != MYANMAR_SYMBOL_AFOREMENTIONED)
@@ -82,8 +89,7 @@ myanmar_engine_break (PangoEngineLang *engine,
 			continue;
 		}
 
-		//[F<CA>] Finals
-		//  Make sure CA is not followed by K
+		//  //[F<CA>] Finals Make sure CA is not followed by K
 		if (i + 1 < n_chars &&
 			wcs[i+1] == MYANMAR_SIGN_ASAT)
 		{
